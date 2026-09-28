@@ -1,5 +1,6 @@
 /*
  * Copyright (C) 2017 The Android Open Source Project
+ * Copyright (C) The LineageOS Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +25,9 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.VisibleForTesting;
 import androidx.cardview.widget.CardView;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.loader.content.Loader;
 import androidx.loader.app.LoaderManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -147,6 +151,14 @@ public class SearchFragment extends Fragment implements SearchView.OnQueryTextLi
         mResultsRecyclerView.setAdapter(mSearchAdapter);
         mResultsRecyclerView.setLayoutManager(new LinearLayoutManager(activity));
         mResultsRecyclerView.addOnScrollListener(mScrollListener);
+        ViewCompat.setOnApplyWindowInsetsListener(mResultsRecyclerView, (v, windowInsets) -> {
+            final Insets insets = windowInsets.getInsets(
+                    WindowInsetsCompat.Type.systemBars()
+                            | WindowInsetsCompat.Type.displayCutout());
+            v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(),
+                    insets.bottom);
+            return windowInsets;
+        });
 
         mNoResultsView = view.findViewById(R.id.no_results_layout);
 
